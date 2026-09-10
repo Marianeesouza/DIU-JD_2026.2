@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Enemy spawn manager. Controls spawn interval, max limit, and gradual health
+/// scaling over time (increases by 1 every 30 seconds).
+/// </summary>
 public class SpawnManager : MonoBehaviour
 {
     [Header("Prefabs")]

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Dead state. Plays a random death animation (SpinDeath or SoulDeath).
+/// </summary>
 public class PlayerDeadState : IPlayerState
 {
     public void Enter(Player player)

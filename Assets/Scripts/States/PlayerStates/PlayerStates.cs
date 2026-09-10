@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Static container with readonly instances of all player states.
+/// Centralizes state access to prevent unnecessary allocations.
+/// </summary>
 public static class PlayerStates
 {
     public static readonly PlayerIdleState Idle = new PlayerIdleState();

@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Abstract base class for all characters (player and enemies).
+/// Implements IDamageable and IKillable, delegating to HealthSystem.
+/// </summary>
 public abstract class BaseCharacter : MonoBehaviour, IDamageable, IKillable
 {
     [SerializeField] protected int maxHealth = 100;

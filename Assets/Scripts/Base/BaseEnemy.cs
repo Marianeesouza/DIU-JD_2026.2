@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Abstract base class for all enemies. Configures Rigidbody2D, Animator, player reference,
+/// movement strategies, and obstacle avoidance via Rigidbody2D.Cast.
+/// </summary>
 public abstract class BaseEnemy : BaseCharacter
 {
     [SerializeField] protected EnemyConfig config;

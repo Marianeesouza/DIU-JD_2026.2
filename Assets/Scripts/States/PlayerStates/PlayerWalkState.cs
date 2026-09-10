@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Walk state. Transitions to Idle when movement input ceases.
+/// </summary>
 public class PlayerWalkState : IPlayerState
 {
     public void Enter(Player player)

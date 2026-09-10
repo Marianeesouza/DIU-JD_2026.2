@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Abstract base class for the player. Caches Rigidbody2D, Animator, and PlayerAttack references.
+/// </summary>
 public abstract class BasePlayer : BaseCharacter
 {
     [Header("Movement")]

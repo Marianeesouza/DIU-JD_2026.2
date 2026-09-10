@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Generic health system for all entities. Implements IDamageable and IKillable.
+/// Manages damage, healing, death, and temporary invulnerability.
+/// </summary>
 public class HealthSystem : MonoBehaviour, IDamageable, IKillable
 {
     [Header("Health")]

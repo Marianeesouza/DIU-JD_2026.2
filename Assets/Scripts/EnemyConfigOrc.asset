@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
   maxHealth: 1
   chaseSpeed: 1.5
-  chaseDistance: 30
+  chaseDistance: 10
   attackDistance: 0.5
   obstacleCheckDistance: 1.5
   obstacleLayerMask:

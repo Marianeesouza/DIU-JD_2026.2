@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Dash state. Duration managed by a timer in Player.cs.
+/// </summary>
 public class PlayerDashState : IPlayerState
 {
     public void Enter(Player player)

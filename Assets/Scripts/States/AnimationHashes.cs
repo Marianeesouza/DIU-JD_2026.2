@@ -1,7 +1,9 @@
 using UnityEngine;
 
-// CORREÇÃO CRÍTICA 5: Strings de animação via StringToHash
-// Evita erros de digitação e melhora performance (comparação de int vs string)
+/// <summary>
+/// Animation parameter hash constants using StringToHash.
+/// Prevents typos and improves performance (int comparison vs string).
+/// </summary>
 public static class AnimationHashes
 {
     public static readonly int IsMoving = Animator.StringToHash("IsMoving");

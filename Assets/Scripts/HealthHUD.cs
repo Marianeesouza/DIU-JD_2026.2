@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Player health HUD on screen. Updates text (TMP) and bar (Slider) from HealthSystem events.
+/// </summary>
 public class HealthHUD : MonoBehaviour
 {
     [Header("References")]

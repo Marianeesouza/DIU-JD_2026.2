@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Player attack system using a hitbox (trigger). Applies damage to enemies
+/// with a HashSet to prevent duplicate hits per swing.
+/// </summary>
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack Settings")]

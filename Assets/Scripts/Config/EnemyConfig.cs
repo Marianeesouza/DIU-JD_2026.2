@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// ScriptableObject configuration for enemies. Single source of truth for health,
+/// speed, chase/attack distances, damage, and obstacle avoidance parameters.
+/// </summary>
 [CreateAssetMenu(fileName = "NewEnemyConfig", menuName = "Game/Enemy Config")]
 public class EnemyConfig : ScriptableObject
 {

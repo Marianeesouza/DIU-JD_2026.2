@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Enemy damage system to the player via trigger. Reads parameters from EnemyConfig.
+/// Respects damage cooldown to prevent rapid hits.
+/// </summary>
 public class EnemyAttack : MonoBehaviour
 {
     private float cooldownTimer;

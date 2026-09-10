@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Main player controller. Handles input (Input System), movement, dash, attack,
+/// damage, and death. Integrates with State Pattern for state management.
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 public class Player : BasePlayer, IDetectable

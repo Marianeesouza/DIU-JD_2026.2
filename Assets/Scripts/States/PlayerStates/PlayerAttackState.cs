@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Attack state. Waits for Animation Event to call OnAttackEnd and finish.
+/// </summary>
 public class PlayerAttackState : IPlayerState
 {
     public void Enter(Player player)

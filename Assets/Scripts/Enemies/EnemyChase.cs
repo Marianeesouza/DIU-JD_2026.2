@@ -1,11 +1,16 @@
 using UnityEngine;
 
+/// <summary>
+/// Enemy chase behavior. Uses Strategy Pattern (IMovementStrategy) for movement,
+/// avoids obstacles via Rigidbody2D.Cast, and applies unstuck push when stuck.
+/// </summary>
 public class EnemyChase : BaseEnemy, IDetectable
 {
     private float lastMoveX;
     private float lastMoveY;
     private bool isTakingDamage;
     private float damageAnimTimer;
+    private bool isChasing;
 
     private Vector3 lastPosition;
     private float stuckTimer;
@@ -15,7 +20,7 @@ public class EnemyChase : BaseEnemy, IDetectable
         base.Awake();
         lastPosition = transform.position;
         currentSpeed = ChaseSpeed;
-        currentMovementStrategy = new ChaseStrategy();
+        currentMovementStrategy = new WanderStrategy();
     }
 
     protected override void OnEnable()
@@ -46,11 +51,21 @@ public class EnemyChase : BaseEnemy, IDetectable
 
         if (distanceToPlayer <= ChaseDistance && distanceToPlayer > AttackDistance)
         {
+            if (!isChasing)
+            {
+                currentMovementStrategy = new ChaseStrategy();
+                isChasing = true;
+            }
             ChasePlayer();
         }
         else
         {
-            StopChasing();
+            if (isChasing)
+            {
+                currentMovementStrategy = new WanderStrategy();
+                isChasing = false;
+            }
+            Wander();
         }
 
         CheckStuck();
@@ -78,9 +93,22 @@ public class EnemyChase : BaseEnemy, IDetectable
         lastMoveY = finalDirection.y;
     }
 
-    private void StopChasing()
+    private void Wander()
     {
-        rb.linearVelocity = Vector2.zero;
+        Vector2 current = transform.position;
+        Vector2 desiredDirection = currentMovementStrategy.CalculateDesiredDirection(current, current);
+
+        if (desiredDirection.sqrMagnitude < 0.01f)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
+        Vector2 finalDirection = ApplyObstacleAvoidance(desiredDirection);
+
+        rb.linearVelocity = finalDirection * currentSpeed * 0.5f;
+        lastMoveX = finalDirection.x;
+        lastMoveY = finalDirection.y;
     }
 
     private void CheckStuck()
