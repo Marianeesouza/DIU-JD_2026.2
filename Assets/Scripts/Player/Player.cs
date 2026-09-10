@@ -4,20 +4,12 @@ using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
-public class PlayerMovement : MonoBehaviour
+public class Player : BasePlayer, IDetectable
 {
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed = 5f;
-
     [Header("Dash")]
     [SerializeField] private float dashSpeed = 15f;
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 0.5f;
-
-    private HealthSystem healthSystem;
-    private PlayerAttack playerAttack;
-    private Rigidbody2D rb;
-    private Animator animator;
 
     private Vector2 moveInput;
     private Vector2 facingDirection = Vector2.down;
@@ -27,44 +19,59 @@ public class PlayerMovement : MonoBehaviour
     private bool isAttacking;
     private bool isDashing;
     private bool isTakingDamage;
-    private bool isDead;
 
     private float dashTimer;
     private float cooldownTimer;
     private float damageTimer;
     private Vector2 dashDirection;
 
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        playerAttack = GetComponent<PlayerAttack>();
-        healthSystem = GetComponent<HealthSystem>();
+    private IPlayerState currentState;
 
+    // Propriedades públicas para os States
+    public Animator Animator => animator;
+    public Vector2 MoveInput => moveInput;
+    public Vector2 FacingDirection => facingDirection;
+    public float DashDuration => dashDuration;
+    public float DashSpeed => dashSpeed;
+    public bool IsAttacking => isAttacking;
+    public bool IsDashing => isDashing;
+    public bool IsTakingDamage => isTakingDamage;
+    public bool IsInvulnerable
+    {
+        get => healthSystem != null && healthSystem.IsInvulnerable;
+        set { if (healthSystem != null) healthSystem.IsInvulnerable = value; }
+    }
+
+    public void SetState(IPlayerState newState)
+    {
+        currentState?.Exit(this);
+        currentState = newState;
+        currentState?.Enter(this);
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        if (healthSystem == null)
-            healthSystem = GetComponent<HealthSystem>();
-
-        if (healthSystem != null)
-        {
-            healthSystem.OnDamageTaken += HandleDamageTaken;
-            healthSystem.OnDeath += HandleDeath;
-        }
+        currentState = PlayerStates.Idle;
+        currentState.Enter(this);
     }
 
-    private void OnDisable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
         if (healthSystem != null)
-        {
-            healthSystem.OnDamageTaken -= HandleDamageTaken;
-            healthSystem.OnDeath -= HandleDeath;
             healthSystem.IsInvulnerable = false;
-        }
     }
 
     private void OnMove(InputValue value)
@@ -85,21 +92,20 @@ public class PlayerMovement : MonoBehaviour
             lastMoveX = attackDir.x;
             lastMoveY = attackDir.y;
 
-            animator.SetFloat("MoveX", lastMoveX);
-            animator.SetFloat("MoveY", lastMoveY);
+            animator.SetFloat(AnimationHashes.MoveX, lastMoveX);
+            animator.SetFloat(AnimationHashes.MoveY, lastMoveY);
 
             if (playerAttack != null)
                 playerAttack.SetAttackDirection(attackDir);
 
-            animator.SetBool("IsAttacking", true);
-            animator.SetTrigger("Attack");
+            SetState(PlayerStates.Attack);
         }
     }
 
     public void OnAttackEnd()
     {
         isAttacking = false;
-        animator.SetBool("IsAttacking", false);
+        animator.SetBool(AnimationHashes.IsAttacking, false);
     }
 
     private void OnDash(InputValue value)
@@ -123,16 +129,15 @@ public class PlayerMovement : MonoBehaviour
             lastMoveX = dashDirection.x;
             lastMoveY = dashDirection.y;
 
-            animator.SetFloat("MoveX", lastMoveX);
-            animator.SetFloat("MoveY", lastMoveY);
-            animator.SetBool("IsDashing", true);
-            animator.SetTrigger("Dash");
+            animator.SetFloat(AnimationHashes.MoveX, lastMoveX);
+            animator.SetFloat(AnimationHashes.MoveY, lastMoveY);
+            animator.SetBool(AnimationHashes.IsDashing, true);
+            animator.SetTrigger(AnimationHashes.Dash);
         }
     }
 
     private void OnJump(InputValue value)
     {
-        // Permite usar o binding Jump existente como Dash
         OnDash(value);
     }
 
@@ -156,6 +161,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isDead) return;
 
+        currentState?.Update(this);
+
         if (isDashing)
         {
             dashTimer -= Time.deltaTime;
@@ -164,7 +171,7 @@ public class PlayerMovement : MonoBehaviour
                 isDashing = false;
                 if (healthSystem != null)
                     healthSystem.IsInvulnerable = false;
-                animator.SetBool("IsDashing", false);
+                animator.SetBool(AnimationHashes.IsDashing, false);
             }
         }
 
@@ -177,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
             if (damageTimer <= 0f)
             {
                 isTakingDamage = false;
-                animator.SetBool("IsTakingDamage", false);
+                animator.SetBool(AnimationHashes.IsTakingDamage, false);
             }
         }
 
@@ -190,51 +197,47 @@ public class PlayerMovement : MonoBehaviour
             lastMoveY = facingDirection.y;
         }
 
-        animator.SetFloat("MoveX", lastMoveX);
-        animator.SetFloat("MoveY", lastMoveY);
-        animator.SetBool("IsMoving", effectiveMove.sqrMagnitude > 0.01f);
+        animator.SetFloat(AnimationHashes.MoveX, lastMoveX);
+        animator.SetFloat(AnimationHashes.MoveY, lastMoveY);
+        animator.SetBool(AnimationHashes.IsMoving, effectiveMove.sqrMagnitude > 0.01f);
     }
 
-    private void HandleDamageTaken(int damage)
+    protected override void HandleDamageTaken(int damage)
     {
         if (isDead) return;
         isTakingDamage = true;
         isAttacking = false;
-        animator.SetBool("IsAttacking", false);
+        animator.SetBool(AnimationHashes.IsAttacking, false);
         damageTimer = 0.5f;
-        Debug.Log($"Player took {damage} damage. Current health: {healthSystem.GetCurrentHealth()}");
-        animator.SetTrigger("Damage");
-        animator.SetBool("IsTakingDamage", true);
+        animator.SetTrigger(AnimationHashes.Damage);
+        animator.SetBool(AnimationHashes.IsTakingDamage, true);
     }
 
     private void OnDamageEnd()
     {
         isTakingDamage = false;
-        animator.ResetTrigger("Damage");
-        animator.SetBool("IsTakingDamage", false);
+        animator.ResetTrigger(AnimationHashes.Damage);
+        animator.SetBool(AnimationHashes.IsTakingDamage, false);
     }
 
-    private void HandleDeath()
+    protected override void HandleDeath()
     {
         if (isDead) return;
-        Debug.Log("Player has died.");
         isDead = true;
         isTakingDamage = false;
         isDashing = false;
         if (healthSystem != null)
             healthSystem.IsInvulnerable = false;
 
-        animator.SetBool("IsDead", true);
-        animator.SetTrigger("Death");
-        if (Random.Range(0, 2) == 0)
-            animator.Play("SpinDeath");
-        else
-            animator.Play("SoulDeath");
+        SetState(PlayerStates.Dead);
     }
 
     public void OnDeathEnd()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-}
 
+    // IDetectable
+    public GameObject GetGameObject() => gameObject;
+    public Vector2 GetPosition() => transform.position;
+}

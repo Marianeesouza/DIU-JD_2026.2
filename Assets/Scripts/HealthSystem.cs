@@ -1,15 +1,22 @@
 using UnityEngine;
 
-public class HealthSystem : MonoBehaviour
+public class HealthSystem : MonoBehaviour, IDamageable, IKillable
 {
     [Header("Health")]
-    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int maxHealth = 5;
     [SerializeField] private int currentHealth;
     public System.Action<int> OnDamageTaken;
     public System.Action<int, int> OnHealthChanged;
-    public System.Action OnDeath;
+    public event System.Action OnDeath;
 
     public bool IsInvulnerable { get; set; }
+    public bool IsDead => isDead;
+
+    public int MaxHealth
+    {
+        get => maxHealth;
+        set => maxHealth = value;
+    }
 
     private bool isDead;
     private float damageCooldown;
@@ -18,6 +25,12 @@ public class HealthSystem : MonoBehaviour
     private void Awake()
     {
         currentHealth = maxHealth;
+    }
+
+    public void Initialize()
+    {
+        currentHealth = maxHealth;
+        isDead = false;
     }
 
     public void TakeDamage(int damage)
@@ -42,7 +55,7 @@ public class HealthSystem : MonoBehaviour
             damageCooldown -= Time.deltaTime;
     }
 
-    private void Die()
+    public void Die()
     {
         if (isDead) return;
         isDead = true;
@@ -65,4 +78,4 @@ public class HealthSystem : MonoBehaviour
     {
         return maxHealth;
     }
-}
+}

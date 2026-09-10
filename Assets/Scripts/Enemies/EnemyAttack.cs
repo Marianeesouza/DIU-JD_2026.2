@@ -1,17 +1,31 @@
 using UnityEngine;
 
-public class EnemyDamage : MonoBehaviour
+public class EnemyAttack : MonoBehaviour
 {
-    [Header("Damage Settings")]
-    [SerializeField] private int damage = 1;
-    [SerializeField] private float damageCooldown = 1f;
-
     private float cooldownTimer;
     private HealthSystem enemyHealthSystem;
+    private EnemyConfig config;
+    private int damage;
+    private float damageCooldown;
 
     private void Awake()
     {
         enemyHealthSystem = GetComponent<HealthSystem>();
+
+        BaseEnemy baseEnemy = GetComponent<BaseEnemy>();
+        if (baseEnemy != null)
+            config = baseEnemy.GetConfig();
+
+        if (config != null)
+        {
+            damage = config.damage;
+            damageCooldown = config.damageCooldown;
+        }
+        else
+        {
+            damage = 1;
+            damageCooldown = 1f;
+        }
     }
 
     private void Update()
@@ -33,7 +47,7 @@ public class EnemyDamage : MonoBehaviour
     private void TryDamage(Collider2D other)
     {
         if (cooldownTimer > 0f) return;
-        
+
         if (enemyHealthSystem != null && enemyHealthSystem.GetCurrentHealth() <= 0)
             return;
 
