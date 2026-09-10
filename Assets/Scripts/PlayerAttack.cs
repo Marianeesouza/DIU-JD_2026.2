@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack Settings")]
-    [SerializeField] private int attackDamage = 20;
+    [SerializeField] private int attackDamage = 1;
     [SerializeField] private GameObject hitbox;
     [SerializeField] private float attackOffset = 0.05f;
 

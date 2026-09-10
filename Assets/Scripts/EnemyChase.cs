@@ -28,6 +28,7 @@ public class EnemyChase : MonoBehaviour
 
     private Vector3 lastPosition;
     private float stuckTimer;
+    private float currentSpeed;
 
     private void Awake()
     {
@@ -40,6 +41,12 @@ public class EnemyChase : MonoBehaviour
             playerTransform = player.transform;
 
         lastPosition = transform.position;
+        currentSpeed = chaseSpeed;
+    }
+
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        currentSpeed = chaseSpeed * multiplier;
     }
 
     private void OnEnable()
@@ -102,7 +109,7 @@ public class EnemyChase : MonoBehaviour
         Vector2 desiredDirection = (playerTransform.position - transform.position).normalized;
         Vector2 finalDirection = GetAvoidedDirection(desiredDirection);
 
-        rb.linearVelocity = finalDirection * chaseSpeed;
+        rb.linearVelocity = finalDirection * currentSpeed;
         lastMoveX = finalDirection.x;
         lastMoveY = finalDirection.y;
     }

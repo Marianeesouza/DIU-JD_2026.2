@@ -16,6 +16,10 @@ public class SpawnManager : MonoBehaviour
     [Header("Limits")]
     [SerializeField] private int maxOrcs = -1;
 
+    [Header("Speed Scaling")]
+    [SerializeField] private float speedGrowthRate = 0.1f;
+    [SerializeField] private float maxSpeedMultiplier = 3f;
+
     [Header("Spawn Area")]
     [SerializeField] private float spawnRadius = 1f;
 
@@ -54,7 +58,16 @@ public class SpawnManager : MonoBehaviour
         Vector2 offset = Random.insideUnitCircle * spawnRadius;
         Vector3 position = point.transform.position + (Vector3)offset;
 
-        Instantiate(orcPrefab, position, Quaternion.identity);
+        GameObject orc = Instantiate(orcPrefab, position, Quaternion.identity);
+        EnemyChase chase = orc.GetComponent<EnemyChase>();
+        if (chase != null)
+            chase.SetSpeedMultiplier(GetSpeedMultiplier());
+    }
+
+    private float GetSpeedMultiplier()
+    {
+        float minutes = Time.time / 60f;
+        return Mathf.Min(1f + speedGrowthRate * minutes, maxSpeedMultiplier);
     }
 
     private int CountOrcs()

@@ -206,12 +206,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyChase
   chaseSpeed: 1
-  chaseDistance: 15
+  chaseDistance: 20
   attackDistance: 0.5
   obstacleCheckDistance: 1.5
   obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
+  stuckTimeThreshold: 1.5
+  unstuckForce: 5
 --- !u!114 &5223156846758534113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,8 +226,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e888a1e1351bc2c42be1ca7291432c25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthSystem
-  maxHealth: 50
-  currentHealth: 50
+  maxHealth: 3
+  currentHealth: 3
 --- !u!114 &-5762756144487101766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd164763c4aa6854e9459e9774022841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDamage
-  damage: 10
+  damage: 1
   damageCooldown: 1
 --- !u!61 &-6439596143700525296
 BoxCollider2D:

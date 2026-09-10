@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyDamage : MonoBehaviour
 {
     [Header("Damage Settings")]
-    [SerializeField] private int damage = 10;
+    [SerializeField] private int damage = 1;
     [SerializeField] private float damageCooldown = 1f;
 
     private float cooldownTimer;
