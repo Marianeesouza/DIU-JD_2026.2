@@ -30,11 +30,13 @@ public class SpawnManager : MonoBehaviour
     private float timer;
     private float currentInterval;
     private int bonusHealth;
+    private float sceneStartTime;
 
     private void Start()
     {
         currentInterval = baseInterval;
         timer = currentInterval;
+        sceneStartTime = Time.time;
     }
 
     private void Update()
@@ -56,7 +58,7 @@ public class SpawnManager : MonoBehaviour
             timer = currentInterval;
         }
 
-        bonusHealth = Mathf.FloorToInt(Time.time / healthInterval) * healthIncrement;
+        bonusHealth = Mathf.FloorToInt((Time.time - sceneStartTime) / healthInterval) * healthIncrement;
     }
 
     private void SpawnOrc()
