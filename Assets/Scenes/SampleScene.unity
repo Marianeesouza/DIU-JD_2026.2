@@ -1880,8 +1880,8 @@ Tilemap:
   - first: {x: 7, y: -7, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 10
-      m_TileSpriteIndex: 10
+      m_TileIndex: 8
+      m_TileSpriteIndex: 8
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -3200,8 +3200,8 @@ Tilemap:
   - first: {x: -1, y: 0, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 10
-      m_TileSpriteIndex: 10
+      m_TileIndex: 8
+      m_TileSpriteIndex: 8
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -4154,13 +4154,13 @@ Tilemap:
     m_RefCount: 0
     m_Data: {fileID: 11400000, guid: f60b960ef60251b4189e8e3a1b53a72e, type: 2}
   - serializedVersion: 2
-    m_RefCount: 11
+    m_RefCount: 13
     m_Data: {fileID: 11400000, guid: 1b72505e12c7a744ca56aeb729eeb6ed, type: 2}
   - serializedVersion: 2
     m_RefCount: 0
     m_Data: {fileID: 11400000, guid: 81f702bf1cfbded469ac20b1a38f666e, type: 2}
   - serializedVersion: 2
-    m_RefCount: 2
+    m_RefCount: 0
     m_Data: {fileID: 11400000, guid: f971e1d4bba57f14aae98fba1ed96d4a, type: 2}
   m_TileSpriteArray:
   - serializedVersion: 2
@@ -4188,13 +4188,13 @@ Tilemap:
     m_RefCount: 0
     m_Data: {fileID: 969006240, guid: e14584f6e10cd8949824766b6cac9e6c, type: 3}
   - serializedVersion: 2
-    m_RefCount: 11
+    m_RefCount: 13
     m_Data: {fileID: 7769453424612927293, guid: e14584f6e10cd8949824766b6cac9e6c, type: 3}
   - serializedVersion: 2
     m_RefCount: 0
     m_Data: {fileID: -1409883076, guid: e14584f6e10cd8949824766b6cac9e6c, type: 3}
   - serializedVersion: 2
-    m_RefCount: 2
+    m_RefCount: 0
     m_Data: {fileID: -72156938504300551, guid: e14584f6e10cd8949824766b6cac9e6c, type: 3}
   m_TileMatrixArray:
   - serializedVersion: 2
@@ -4406,8 +4406,8 @@ MonoBehaviour:
   minInterval: 0.5
   intervalDecreaseRate: 0.2
   maxOrcs: -1
-  speedGrowthRate: 0.1
-  maxSpeedMultiplier: 3
+  healthInterval: 30
+  healthIncrement: 1
   spawnRadius: 1
 --- !u!4 &882979515
 Transform:

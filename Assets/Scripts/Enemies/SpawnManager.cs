@@ -16,15 +16,16 @@ public class SpawnManager : MonoBehaviour
     [Header("Limits")]
     [SerializeField] private int maxOrcs = -1;
 
-    [Header("Speed Scaling")]
-    [SerializeField] private float speedGrowthRate = 0.1f;
-    [SerializeField] private float maxSpeedMultiplier = 3f;
+    [Header("Health Scaling")]
+    [SerializeField] private float healthInterval = 30f;
+    [SerializeField] private int healthIncrement = 1;
 
     [Header("Spawn Area")]
     [SerializeField] private float spawnRadius = 1f;
 
     private float timer;
     private float currentInterval;
+    private int bonusHealth;
 
     private void Start()
     {
@@ -50,6 +51,8 @@ public class SpawnManager : MonoBehaviour
 
             timer = currentInterval;
         }
+
+        bonusHealth = Mathf.FloorToInt(Time.time / healthInterval) * healthIncrement;
     }
 
     private void SpawnOrc()
@@ -59,15 +62,20 @@ public class SpawnManager : MonoBehaviour
         Vector3 position = point.transform.position + (Vector3)offset;
 
         GameObject orc = Instantiate(orcPrefab, position, Quaternion.identity);
-        EnemyChase chase = orc.GetComponent<EnemyChase>();
-        if (chase != null)
-            chase.SetSpeedMultiplier(GetSpeedMultiplier());
+
+        HealthSystem health = orc.GetComponent<HealthSystem>();
+        if (health != null)
+        {
+            health.MaxHealth = GetTotalHealth();
+            health.Initialize();
+        }
     }
 
-    private float GetSpeedMultiplier()
+    private int GetTotalHealth()
     {
-        float minutes = Time.time / 60f;
-        return Mathf.Min(1f + speedGrowthRate * minutes, maxSpeedMultiplier);
+        EnemyConfig config = orcPrefab.GetComponent<BaseEnemy>()?.GetConfig();
+        int baseHealth = config != null ? config.maxHealth : 1;
+        return baseHealth + bonusHealth;
     }
 
     private int CountOrcs()

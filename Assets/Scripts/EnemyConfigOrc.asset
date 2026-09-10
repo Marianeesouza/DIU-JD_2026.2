@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce5c6452802944c4b8ca1d1b83e15775, type: 3}
   m_Name: EnemyConfigOrc
   m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
-  maxHealth: 3
+  maxHealth: 1
   chaseSpeed: 1.5
   chaseDistance: 30
   attackDistance: 0.5

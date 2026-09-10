@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyConfig : ScriptableObject
 {
     [Header("Health")]
-    public int maxHealth = 3;
+    public int maxHealth = 1;
 
     [Header("Movement")]
     public float chaseSpeed = 1f;
