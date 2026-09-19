@@ -7,6 +7,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewEnemyConfig", menuName = "Game/Enemy Config")]
 public class EnemyConfig : ScriptableObject
 {
+    [Header("Identity")]
+    public EnemyType enemyType;
+
     [Header("Health")]
     public int maxHealth = 1;
 
