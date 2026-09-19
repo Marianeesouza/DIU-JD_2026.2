@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: EnemyConfigOrc
   m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
   maxHealth: 1
-  chaseSpeed: 1.5
-  chaseDistance: 10
+  chaseSpeed: 2
+  chaseDistance: 8
   attackDistance: 0.5
   obstacleCheckDistance: 1.5
   obstacleLayerMask:
