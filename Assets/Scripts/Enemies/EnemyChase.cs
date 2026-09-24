@@ -162,7 +162,10 @@ public class EnemyChase : BaseEnemy, IDetectable
         isDead = true;
         rb.linearVelocity = Vector2.zero;
         animator.SetTrigger(AnimationHashes.Death);
-        GetComponent<Collider2D>().enabled = false;
+        if (TransformationManager.Instance != null)
+            TransformationManager.Instance.AddEssenceOnKill(GetConfig());
+        foreach (Collider2D col in GetComponents<Collider2D>())
+            col.enabled = false;
         Destroy(gameObject, 1.5f);
     }
 

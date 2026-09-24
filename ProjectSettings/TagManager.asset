@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemy
+  - Obstacles
+  - ExitFloor
+  - Doors
   layers:
   - Default
   - TransparentFX
@@ -14,9 +17,9 @@ TagManager:
   - UI
   - Player
   - Enemy
-  - 
-  - 
-  - 
+  - Obstacles
+  - ExitFloor
+  - Doors
   - 
   - 
   - 

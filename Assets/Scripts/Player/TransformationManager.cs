@@ -17,9 +17,6 @@ public class TransformationManager : MonoBehaviour
     [Header("Essence Rewards (fallback if enemy has no EnemyEssenceReward)")]
     [SerializeField] private List<EnemyEssenceReward> essenceRewards = new List<EnemyEssenceReward>();
 
-    [Header("Shadow Essence")]
-    [SerializeField] private bool hasShadowEssence;
-
     private int currentEssence;
     private Dictionary<EnemyType, int> essenceRewardLookup = new Dictionary<EnemyType, int>();
 
@@ -27,12 +24,10 @@ public class TransformationManager : MonoBehaviour
     public event System.Action<int, int> OnEssenceChanged;   // (current, max)
     public event System.Action OnTransformationReady;         // fired when essence >= cost
     public event System.Action OnTransformationConsumed;      // fired when essence is spent
-    public event System.Action OnShadowEssenceCollected;
 
     public int CurrentEssence => currentEssence;
     public int MaxEssence => maxEssence;
     public int TransformationCost => transformationCost;
-    public bool HasShadowEssence => hasShadowEssence;
     public bool CanTransform => currentEssence >= transformationCost;
 
     private void Awake()
@@ -50,11 +45,12 @@ public class TransformationManager : MonoBehaviour
             if (reward != null)
                 essenceRewardLookup[reward.enemyType] = reward.essenceValue;
         }
+
+        currentEssence = PlayerProgress.GetEssenceToApply();
     }
 
     private void Start()
     {
-        currentEssence = 0;
         OnEssenceChanged?.Invoke(currentEssence, maxEssence);
     }
 
@@ -115,35 +111,11 @@ public class TransformationManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Grants the special Shadow Lord essence (found in the secret room).
-    /// </summary>
-    public void AddShadowEssence()
-    {
-        if (hasShadowEssence) return;
-
-        hasShadowEssence = true;
-        OnShadowEssenceCollected?.Invoke();
-    }
-
-    /// <summary>
-    /// Consumes the Shadow Lord essence for a transformation. Returns true if successful.
-    /// </summary>
-    public bool ConsumeShadowEssence()
-    {
-        if (!hasShadowEssence) return false;
-
-        hasShadowEssence = false;
-        OnTransformationConsumed?.Invoke();
-        return true;
-    }
-
-    /// <summary>
     /// Resets the essence bar (e.g. on scene reload).
     /// </summary>
     public void ResetEssence()
     {
         currentEssence = 0;
-        hasShadowEssence = false;
         OnEssenceChanged?.Invoke(currentEssence, maxEssence);
     }
 
@@ -156,7 +128,6 @@ public class TransformationManager : MonoBehaviour
             case EnemyType.Slime: return 8;
             case EnemyType.Orc: return 15;
             case EnemyType.Troll: return 100;
-            case EnemyType.ShadowLord: return 0;
             default: return 10;
         }
     }

@@ -32,6 +32,9 @@ public abstract class BaseEnemy : BaseCharacter
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
+        if (config != null && healthSystem != null)
+            healthSystem.SetDamageCooldown(config.damageImmunityDuration);
+
         obstacleFilter = new ContactFilter2D();
         obstacleFilter.SetLayerMask(ObstacleLayerMask);
         obstacleFilter.useTriggers = false;
@@ -56,11 +59,6 @@ public abstract class BaseEnemy : BaseCharacter
     public void SetMovementStrategy(IMovementStrategy strategy)
     {
         currentMovementStrategy = strategy;
-    }
-
-    public void SetSpeedMultiplier(float multiplier)
-    {
-        currentSpeed = ChaseSpeed * multiplier;
     }
 
     public EnemyConfig GetConfig()

@@ -5,10 +5,10 @@
 public enum EnemyType
 {
     None,
+    Bat,
     Zombie,
     Wildfire,
     Slime,
     Troll,
-    Orc,
-    ShadowLord
+    Orc
 }

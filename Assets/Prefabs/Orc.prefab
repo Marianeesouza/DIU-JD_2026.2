@@ -205,8 +205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca58ac3c2b5f4d4c90c5b03da2905a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyChase
-  maxHealth: 10
-  config: {fileID: 11400000, guid: 8b244fb499f5ea143b428f78eb744324, type: 2}
+  maxHealth: 3
+  config: {fileID: 11400000, guid: b4fd40e89fc74ec499d9ed94dd9bea32, type: 2}
 --- !u!114 &5223156846758534113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,7 +267,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.005, y: 0.006}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -277,5 +277,5 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.08, y: 0.09}
+  m_Size: {x: 0.075, y: 0.075}
   m_EdgeRadius: 0

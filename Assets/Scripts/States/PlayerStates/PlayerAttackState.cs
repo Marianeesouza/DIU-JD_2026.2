@@ -7,7 +7,7 @@ public class PlayerAttackState : IPlayerState
 {
     public void Enter(Player player)
     {
-        player.Animator.SetBool("IsAttacking", true);
+        player.Animator.SetBool(AnimationHashes.IsAttacking, true);
         player.Animator.SetTrigger(AnimationHashes.Attack);
     }
 
@@ -18,6 +18,6 @@ public class PlayerAttackState : IPlayerState
 
     public void Exit(Player player)
     {
-        player.Animator.SetBool("IsAttacking", false);
+        player.Animator.SetBool(AnimationHashes.IsAttacking, false);
     }
 }

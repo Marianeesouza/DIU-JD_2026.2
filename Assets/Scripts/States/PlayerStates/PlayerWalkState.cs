@@ -7,7 +7,7 @@ public class PlayerWalkState : IPlayerState
 {
     public void Enter(Player player)
     {
-        player.Animator.SetBool("IsMoving", true);
+        player.Animator.SetBool(AnimationHashes.IsMoving, true);
     }
 
     public void Update(Player player)

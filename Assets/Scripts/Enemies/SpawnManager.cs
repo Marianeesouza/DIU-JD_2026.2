@@ -2,12 +2,20 @@ using UnityEngine;
 
 /// <summary>
 /// Enemy spawn manager. Controls spawn interval, max limit, and gradual health
-/// scaling over time (increases by 1 every 30 seconds).
+/// scaling over time. Supports multiple enemy prefab types (weighted random).
 /// </summary>
 public class SpawnManager : MonoBehaviour
 {
+    [System.Serializable]
+    public struct EnemySpawnEntry
+    {
+        public GameObject prefab;
+        public int weight;
+    }
+
     [Header("Prefabs")]
     [SerializeField] private GameObject orcPrefab;
+    [SerializeField] private EnemySpawnEntry[] enemyPrefabs;
 
     [Header("Spawn Points")]
     [SerializeField] private SpawnPoint[] spawnPoints;
@@ -18,7 +26,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float intervalDecreaseRate = 0.5f;
 
     [Header("Limits")]
-    [SerializeField] private int maxOrcs = -1;
+    [SerializeField] private int maxEnemies = -1;
 
     [Header("Health Scaling")]
     [SerializeField] private float healthInterval = 30f;
@@ -31,29 +39,65 @@ public class SpawnManager : MonoBehaviour
     private float currentInterval;
     private int bonusHealth;
     private float sceneStartTime;
+    private int totalWeight;
 
     private void Start()
     {
         currentInterval = baseInterval;
         timer = currentInterval;
         sceneStartTime = Time.time;
+        CalculateTotalWeight();
+    }
+
+    private void CalculateTotalWeight()
+    {
+        totalWeight = 0;
+        if (enemyPrefabs != null)
+        {
+            for (int i = 0; i < enemyPrefabs.Length; i++)
+            {
+                if (enemyPrefabs[i].prefab != null)
+                    totalWeight += Mathf.Max(1, enemyPrefabs[i].weight);
+            }
+        }
+        if (orcPrefab != null && totalWeight == 0)
+            totalWeight = 1;
+    }
+
+    private bool HasAnyPrefab()
+    {
+        if (orcPrefab != null) return true;
+        if (enemyPrefabs != null)
+        {
+            for (int i = 0; i < enemyPrefabs.Length; i++)
+            {
+                if (enemyPrefabs[i].prefab != null) return true;
+            }
+        }
+        return false;
     }
 
     private void Update()
     {
-        if (spawnPoints.Length == 0 || orcPrefab == null) return;
+        if (spawnPoints == null || spawnPoints.Length == 0) return;
+        if (!HasAnyPrefab()) return;
 
         timer -= Time.deltaTime;
 
         if (timer <= 0f)
         {
-            if (maxOrcs < 0 || CountOrcs() < maxOrcs)
+            bool spawned = false;
+            if (maxEnemies < 0 || CountEnemies() < maxEnemies)
             {
-                SpawnOrc();
+                spawned = SpawnEnemy();
             }
 
-            currentInterval = Mathf.Max(minInterval,
-                currentInterval - intervalDecreaseRate * Time.deltaTime / 60f);
+            // Only ramp difficulty when an enemy actually spawned (no phantom ramp at cap).
+            if (spawned)
+            {
+                currentInterval = Mathf.Max(minInterval,
+                    currentInterval - intervalDecreaseRate * Time.deltaTime / 60f);
+            }
 
             timer = currentInterval;
         }
@@ -61,30 +105,56 @@ public class SpawnManager : MonoBehaviour
         bonusHealth = Mathf.FloorToInt((Time.time - sceneStartTime) / healthInterval) * healthIncrement;
     }
 
-    private void SpawnOrc()
+    private GameObject PickPrefab()
     {
+        // Se não houver array, usar orcPrefab como fallback
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0 || totalWeight == 0)
+            return orcPrefab;
+
+        int roll = Random.Range(0, totalWeight);
+        int cumulative = 0;
+
+        for (int i = 0; i < enemyPrefabs.Length; i++)
+        {
+            if (enemyPrefabs[i].prefab == null) continue;
+            cumulative += Mathf.Max(1, enemyPrefabs[i].weight);
+            if (roll < cumulative)
+                return enemyPrefabs[i].prefab;
+        }
+
+        // Fallback: primeiro prefab não-nulo
+        for (int i = 0; i < enemyPrefabs.Length; i++)
+        {
+            if (enemyPrefabs[i].prefab != null)
+                return enemyPrefabs[i].prefab;
+        }
+
+        return orcPrefab;
+    }
+
+    private bool SpawnEnemy()
+    {
+        GameObject prefab = PickPrefab();
+        if (prefab == null) return false;
+
         SpawnPoint point = spawnPoints[Random.Range(0, spawnPoints.Length)];
         Vector2 offset = Random.insideUnitCircle * spawnRadius;
         Vector3 position = point.transform.position + (Vector3)offset;
 
-        GameObject orc = Instantiate(orcPrefab, position, Quaternion.identity);
+        GameObject enemy = Instantiate(prefab, position, Quaternion.identity);
 
-        HealthSystem health = orc.GetComponent<HealthSystem>();
+        HealthSystem health = enemy.GetComponent<HealthSystem>();
         if (health != null)
         {
-            health.MaxHealth = GetTotalHealth();
+            EnemyConfig config = prefab.GetComponent<BaseEnemy>()?.GetConfig();
+            int baseHealth = config != null ? config.maxHealth : 1;
+            health.MaxHealth = baseHealth + bonusHealth;
             health.Initialize();
         }
+        return true;
     }
 
-    private int GetTotalHealth()
-    {
-        EnemyConfig config = orcPrefab.GetComponent<BaseEnemy>()?.GetConfig();
-        int baseHealth = config != null ? config.maxHealth : 1;
-        return baseHealth + bonusHealth;
-    }
-
-    private int CountOrcs()
+    private int CountEnemies()
     {
         return GameObject.FindGameObjectsWithTag("Enemy").Length;
     }

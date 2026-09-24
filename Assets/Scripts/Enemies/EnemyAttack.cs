@@ -52,16 +52,20 @@ public class EnemyAttack : MonoBehaviour
     {
         if (cooldownTimer > 0f) return;
 
-        if (enemyHealthSystem != null && enemyHealthSystem.GetCurrentHealth() <= 0)
+        if (enemyHealthSystem != null &&
+            (enemyHealthSystem.IsDead || enemyHealthSystem.GetCurrentHealth() <= 0))
             return;
 
         if (other.CompareTag("Player"))
         {
             HealthSystem playerHealth = other.GetComponent<HealthSystem>();
-            if (playerHealth != null)
+            // Only start cooldown when damage will actually land (skip i-frames/dead).
+            if (playerHealth != null && !playerHealth.IsInvulnerable && !playerHealth.IsDead)
             {
+                int before = playerHealth.GetCurrentHealth();
                 playerHealth.TakeDamage(damage);
-                cooldownTimer = damageCooldown;
+                if (playerHealth.GetCurrentHealth() < before || playerHealth.IsDead)
+                    cooldownTimer = damageCooldown;
             }
         }
     }

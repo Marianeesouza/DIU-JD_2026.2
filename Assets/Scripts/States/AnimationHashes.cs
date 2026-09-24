@@ -16,7 +16,6 @@ public static class AnimationHashes
     public static readonly int Death = Animator.StringToHash("Death");
     public static readonly int Damage = Animator.StringToHash("Damage");
     public static readonly int SpinDeath = Animator.StringToHash("SpinDeath");
-    public static readonly int SoulDeath = Animator.StringToHash("SoulDeath");
     public static readonly int MoveX = Animator.StringToHash("MoveX");
     public static readonly int MoveY = Animator.StringToHash("MoveY");
 }

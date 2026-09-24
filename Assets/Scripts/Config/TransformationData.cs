@@ -43,6 +43,10 @@ public class TransformationData : ScriptableObject
     [Tooltip("Multiplier on incoming damage while transformed (e.g. 1.2 = +20% damage taken).")]
     public float damageMultiplierReceived = 1f;
 
+    [Header("Max Health")]
+    [Tooltip("Multiplier applied to max health while transformed (e.g. 0.8 = -20% max HP, Warg).")]
+    public float maxHealthMultiplier = 1f;
+
     [Header("Post-Transformation Debuff")]
     [Tooltip("Duration of the exhaustion debuff after the transformation ends (seconds).")]
     public float postTransformationDebuffDuration = 2f;

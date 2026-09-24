@@ -7,7 +7,7 @@ public class PlayerIdleState : IPlayerState
 {
     public void Enter(Player player)
     {
-        player.Animator.SetBool("IsMoving", false);
+        player.Animator.SetBool(AnimationHashes.IsMoving, false);
     }
 
     public void Update(Player player)
